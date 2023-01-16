@@ -10,6 +10,17 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+distro=$(uname -a)
+
+if [[ $distro == *"Ubuntu"* ]] || [[ $distro == *"Debian"* ]]; then
+    package_manager="apt-get"
+elif [[ $distro == *"Red Hat"* ]] || [[ $distro == *"CentOS"* ]] || [[ $distro == *"Fedora"* ]]; then
+    package_manager="yum"
+else
+    echo "This script is not supported on this Linux distribution"
+    exit 1
+fi
+
 if [ -x "$(command -v ufw)" ]; then
     echo 'Disabling ufw firewall...'
     ufw disable
@@ -24,7 +35,7 @@ fi
 
 if ! [ -x "$(command -v gpg)" ]; then
     echo 'Error: gpg is not installed. Installing gpg...'
-    apt-get update && apt-get install -y gnupg
+    $package_manager update && $package_manager install -y gnupg
     echo 'gpg has been installed'
 else
     echo 'gpg is already installed'
@@ -32,7 +43,7 @@ fi
 
 if ! [ -x "$(command -v curl)" ]; then
     echo 'Error: curl is not installed. Installing curl...'
-    apt-get update && apt-get install -y curl
+    $package_manager update && $package_manager install -y curl
     echo 'curl has been installed'
 else
     echo 'curl is already installed'
@@ -40,7 +51,7 @@ fi
 
 if ! [ -x "$(command -v openssl)" ]; then
     echo 'Error: openssl is not installed. Installing openssl...'
-    apt-get update && apt-get install -y openssl
+    $package_manager update && $package_manager install -y openssl
     echo 'openssl has been installed'
 else
     echo 'openssl is already installed'
