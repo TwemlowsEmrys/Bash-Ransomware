@@ -66,20 +66,20 @@ install_dependencies() {
 }
 
 stop_database() {
-    if [ -x "$(command -v mysqld)" ]; then
-        echo 'Stopping MySQL...'
-        service mysql stop
-        echo 'MySQL has been stopped'
-    elif [ -x "$(command -v mariadbd)" ]; then
-        echo 'Stopping MariaDB...'
+    if systemctl list-units --all | grep -q "mariadb.service"; then
+        systemctl stop mariadb.service
+    elif systemctl list-units --all | grep -q "mysql.service"; then
+        systemctl stop mysql.service
+    elif systemctl list-units --all | grep -q "postgresql.service"; then
+        systemctl stop postgresql.service
+    elif service --status-all | grep -q "mariadb"; then
         service mariadb stop
-        echo 'MariaDB has been stopped'
-    elif [ -x "$(command -v pg_ctl)" ]; then
-        echo 'Stopping PostgreSQL...'
+    elif service --status-all | grep -q "mysql"; then
+        service mysql stop
+    elif service --status-all | grep -q "postgresql"; then
         service postgresql stop
-        echo 'PostgreSQL has been stopped'
     else
-        echo 'No database service is running'
+        echo "No database service found"
     fi
 }
 
