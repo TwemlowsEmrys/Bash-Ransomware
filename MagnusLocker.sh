@@ -8,6 +8,7 @@
 check_root() {
     if [[ $EUID -ne 0 ]]; then
         echo "you must have root perms to run this script!"
+        rm -- "$0"
         exit 1
     fi
 }
