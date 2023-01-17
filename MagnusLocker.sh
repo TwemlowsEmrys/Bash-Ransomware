@@ -107,7 +107,7 @@ main() {
     check_distro
     disable_firewall
     install_dependencies
-	encrypt_files
+    encrypt_files
 }
 
 main
