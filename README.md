@@ -7,8 +7,10 @@ To better avoid end point security solutions make sure before you run the script
 
 # Setup
 
-Install flask for server.py
+Install flask for server.py (pip install flask)
 
-chmod +x MagnusLocker.sh
+sudo ./build.sh
 
 sudo ufw allow 1337/tcp
+
+host the relevant files in the web root /var/www/html such as index.html and MagnusLocker once compiled
